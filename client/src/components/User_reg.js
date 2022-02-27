@@ -62,8 +62,8 @@ export default function User_reg() {
   };
 
   return (
-    <div id="bg" style={{ padding: "85px" }}>
-      <div className="Main">
+    <div id="bg">
+      <div className="user_reg_main">
         <div className="wrapper bg-white my-3">
           <div className="h3" style={{ color: "black" }}>
             User Registration Protal

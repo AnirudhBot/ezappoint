@@ -1,20 +1,16 @@
 const mongoose = require("mongoose");
 
 const userClinicSchema = new mongoose.Schema({
-  clinicName: {
+  nameOfClinic: {
     type: String,
   },
-  listOfUsers: [
+  queue: [
     {
       currUserName: {
         type: String,
       },
       currUserContact: {
         type: String,
-      },
-      currUserToken: {
-        type: Number,
-        default: 1,
       },
     },
   ],

@@ -75,7 +75,7 @@ export default function Register() {
 
   return (
     <div id="bg">
-      <div className="Main">
+      <div className="user_reg_main">
         <div className="wrapper bg-white my-2">
           <div className="h3" style={{ color: "black" }}>
             Doctor's Registration Protal

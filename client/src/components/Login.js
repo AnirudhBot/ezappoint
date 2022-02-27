@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from "./Navbar";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,11 +17,16 @@ export default function Login() {
         password,
       })
       .then((response) => {
-        const message = response.data;
+        const message = response.data.message;
         if (message === "Logged in sucessfully") {
-          navigate("/userhome");
+          navigate("/userhome", {
+            state: {
+              name: response.data.foundUser.firstName,
+              contact: response.data.foundUser.contact,
+            },
+          });
         } else {
-          alert(message);
+          alert(response.data);
         }
       })
       .catch((err) => {

@@ -1,16 +1,16 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const clinicModel = require("./models/clinics");
 const userModel = require("./models/users");
 const userClinicModel = require("./models/userClinics");
-const tokenModel = require("./models/token")
+const tokenModel = require("./models/token");
 const dotenv = require("dotenv");
 const axios = require("axios");
 const app = express();
 const PORT = 3001 || process.env.PORT;
 
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
@@ -25,20 +25,20 @@ mongoose
     console.log("failed connecting to atlas");
   });
 
-
-// post request for getting queue 
+// post request for getting queue
 
 app.post("/getQueue", (req, res) => {
   const currClinicName = req.body.clinicName;
   userClinicModel.findOne(
-    {clinicName : currClinicName}, function(err, foundClinic){
-      if(err){
+    { clinicName: currClinicName },
+    function (err, foundClinic) {
+      if (err) {
         console.log(err);
       } else {
         res.send(foundClinic.currUserToken);
       }
     }
-  )
+  );
 });
 
 // post request for updating queue
@@ -47,27 +47,44 @@ app.post("/updateQueue", (req, res) => {
   const currClinicName = req.body.clinicName;
   const currUser = req.body.user;
   userClinicModel.findOne(
-    {clinicName: currClinicName}, function(err, foundClinic){
-      if(err){
-        console.log(err);
+    { nameOfClinic: currClinicName },
+    function (err, foundClinic) {
+      if (foundClinic == null) {
+        const newUser = new userClinicModel({
+          nameOfClinic: currClinicName,
+          queue: [
+            { currUserName: currUser.name, currUserContact: currUser.contact },
+          ],
+        });
+        newUser.save(function (err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        });
       } else {
         userClinicModel.updateOne(
-          {clinicName: currClinicName}, 
-          { 
-            $set: { listOfUsers: [...foundClinic.listOfUsers, {
-              currUserName: currUser.name,
-              currUserContact: currUser.contact,
-              currUserToken: foundClinic.listOfUsers.length+1
-            }]}
+          { nameOfClinic: currClinicName },
+          {
+            $set: {
+              queue: [
+                ...foundClinic.queue,
+                {
+                  currUserName: currUser.name,
+                  currUserContact: currUser.contact,
+                },
+              ],
+            },
           },
-          function(err){
+          function (err) {
             console.log(err);
           }
-        )
+        );
       }
     }
-  )
-})
+  );
+});
 
 // post request for getting tokens
 
@@ -84,7 +101,7 @@ app.post("/updateQueue", (req, res) => {
 //   )
 // });
 
-// post request for updating token 
+// post request for updating token
 
 // app.post("/updateToken", (req, res) => {
 //   const currClinicName = req.body.clinicName;
@@ -94,7 +111,7 @@ app.post("/updateQueue", (req, res) => {
 //         console.log(err);
 //       } else {
 //         tokenModel.updateOne(
-//           {clinicName: currClinicName}, 
+//           {clinicName: currClinicName},
 //           {$inc: {tokenNumber: 1}},
 //           function(err){
 //             console.log(err);
@@ -121,7 +138,7 @@ app.post("/registerClinic", async (req, res) => {
   res.json(clinic);
 });
 
-// Login as a Clinic 
+// Login as a Clinic
 
 app.post("/loginClinic", (req, res) => {
   const clinicEmail = req.body.email;
@@ -159,7 +176,6 @@ app.post("/registerUser", async (req, res) => {
   res.json(user);
 });
 
-
 // Login as a User
 app.post("/loginUser", (req, res) => {
   const userEmail = req.body.email;
@@ -172,14 +188,16 @@ app.post("/loginUser", (req, res) => {
       if (foundUser) {
         if (foundUser.password === userPassword) {
           message = "Logged in sucessfully";
+          res.send({message, foundUser});
         } else {
           message = "Sorry wrong password";
+          res.send(message);
         }
       } else {
         message = "No such email registered";
+        res.send(message);
       }
     }
-    res.send(message);    
   });
 });
 
@@ -199,7 +217,7 @@ app.post("/loginUser", (req, res) => {
 
 //             console.log(foundUserClinic.listOfUsers);
 //             userClinicModel.updateOne(
-//               {clinicName: foundUserClinic.clinicName}, 
+//               {clinicName: foundUserClinic.clinicName},
 //               {$set: { listOfUsers: [...foundUserClinic.listOfUsers, {
 //                 currUserName: currUser.name,
 //                 currUserContact: currUser.contact
@@ -235,17 +253,18 @@ app.post("/loginUser", (req, res) => {
 app.post("/deleteAppointment", (req, res) => {
   const currClinic = req.body.clinic;
   userClinicModel.findOne(
-    {clinicName: currClinic.name},
-    function(err, foundUserClinic){
-      if(err){
+    { clinicName: currClinic.name },
+    function (err, foundUserClinic) {
+      if (err) {
         console.log(err);
       } else {
-          userClinicModel.updateOne({clinicName: foundUserClinic.clinicName},
-            {$pop: {listOfUsers: -1}},
-            function(err){
-              console.log(err);
-            }
-          )
+        userClinicModel.updateOne(
+          { clinicName: foundUserClinic.clinicName },
+          { $pop: { listOfUsers: -1 } },
+          function (err) {
+            console.log(err);
+          }
+        );
       }
     }
   );
@@ -254,13 +273,13 @@ app.post("/deleteAppointment", (req, res) => {
 // fetching the clincs
 
 app.get("/fetchClinics", (req, res) => {
-  clinicModel.find({}, function(err, results){
-    if(err){
-      console.log(err); 
+  clinicModel.find({}, function (err, results) {
+    if (err) {
+      console.log(err);
     } else {
       res.send(results);
     }
-  })
+  });
 });
 
 // app.post("/fetchQueue", (req, res) => {
@@ -270,7 +289,7 @@ app.get("/fetchClinics", (req, res) => {
 //     function(err, foundUserClinic){
 //       if(err){
 //         console.log(err)
-//       } else { 
+//       } else {
 //         res.send(foundUserClinic.listOfUsers);
 //       }
 //     }

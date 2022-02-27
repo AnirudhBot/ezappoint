@@ -14,11 +14,11 @@ export default function () {
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
-                <div className="carousel-inner " data-ride="carousel" data-interval="2">
+                <div className="carousel-inner" data-ride="carousel" data-interval="2">
                     <div className="carousel-item active">
                         <div className="d-block w-100" alt="...">
-                            <div id='image1'/>
-                            <div className="carousel-caption d-none d-md-block">
+                            <div id='image1' className='min-vh-100'/>
+                            <div className="custom-carousel-caption d-none d-md-block">
                                 <h2>Easy Appointment Booking!</h2>
                                 <p>Book Clinic Appointments easily from the comforts of your homes.</p>
                             </div>
@@ -26,8 +26,8 @@ export default function () {
                     </div>
                     <div className="carousel-item">
                     <div className="d-block w-100" alt="...">
-                            <div id='image2'/>
-                            <div className="carousel-caption d-none d-md-block">
+                            <div id='image2' className='min-vh-100'/>
+                            <div className="custom-carousel-caption d-none d-md-block">
                                 <h2>Current Queue Status!</h2>
                                 <p>Check current queue status and plan your trip to clinic accordingly and save time from standing in long queues.</p>
                             </div>
@@ -35,15 +35,15 @@ export default function () {
                     </div>
                     <div className="carousel-item">
                     <div className="d-block w-100" alt="...">
-                            <div id='image3'/>
-                            <div className="carousel-caption d-none d-md-block">
+                            <div id='image3' className='min-vh-100'/>
+                            <div className="custom-carousel-caption d-none d-md-block">
                                 <h2>Find Your Nearest Clinic!</h2>
                                 <p>Find clinic of any speciality nearest to you!.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="carousel-caption " style={{margin:'100px'}}>
+                <div className="custom-carousel-caption" style={{margin:'100px 0'}}>
                 <Link to="/register" className="btn btn-info mx-2">Register as Clinic</Link> |
                 <Link to="/reguser" className="btn btn-info mx-2">Register as a User</Link>                 
                 </div>
