@@ -2,7 +2,10 @@ import React from 'react'
 import './about.css'
 
 export default function About(props) {
-  let c = () => { if(props.mode === 'dark') return 'white'; else return 'black'; }
+  let c = () => { if(props.mode === 'dark') {
+    return 'white';
+  }  
+   else return 'black'; }
   return (
     <section className="Team">
       <div className="container" style={{padding:'49px'}}>

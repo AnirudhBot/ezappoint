@@ -29,13 +29,19 @@ mongoose
 
 app.post("/getQueue", (req, res) => {
   const currClinicName = req.body.clinicName;
+  let queueLength;
   userClinicModel.findOne(
-    { clinicName: currClinicName },
+    { nameOfClinic: currClinicName },
     function (err, foundClinic) {
       if (err) {
         console.log(err);
       } else {
-        res.send(foundClinic.currUserToken);
+        if (foundClinic == null) {
+          queueLength = 0;
+        } else {
+          queueLength = foundClinic.queue.length;
+        }
+        res.send(`${queueLength}`);
       }
     }
   );
@@ -144,17 +150,21 @@ app.post("/loginClinic", (req, res) => {
   const clinicEmail = req.body.email;
   const clinicPassword = req.body.password;
   clinicModel.findOne({ email: clinicEmail }, function (err, foundClinic) {
+    let message = "";
     if (err) {
       console.log(err);
     } else {
       if (foundClinic) {
         if (foundClinic.password === clinicPassword) {
-          res.send("Logged in successfully");
+          message = "Logged in successfully";
+          res.send({ message, foundClinic });
         } else {
-          res.send("Sorry wrong password");
+          message = "Sorry wrong password";
+          res.send(message);
         }
       } else {
-        res.send("No such email registered");
+        message = "No such email registered";
+        res.send(message);
       }
     }
   });
@@ -188,7 +198,7 @@ app.post("/loginUser", (req, res) => {
       if (foundUser) {
         if (foundUser.password === userPassword) {
           message = "Logged in sucessfully";
-          res.send({message, foundUser});
+          res.send({ message, foundUser });
         } else {
           message = "Sorry wrong password";
           res.send(message);

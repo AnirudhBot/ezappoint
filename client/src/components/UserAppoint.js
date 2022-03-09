@@ -5,6 +5,24 @@ import axios from "axios";
 
 export default function UserAppoint() {
   const location = useLocation();
+  const [queueL, setQueueL] = useState();
+  const [min, setMin] = useState("00");
+  const [sec, setSec] = useState("00");
+  let minCounter;
+  let secCounter;
+
+  const startTimer = () => {
+    secCounter--;
+    if (secCounter < 0) {
+      if (minCounter === 0) {
+        return;
+      }
+      minCounter--;
+      secCounter = 59;
+      setMin(minCounter);
+      setSec(secCounter);
+    } else setSec(secCounter);
+  };
 
   const bookingHandler = (e) => {
     const clinicName = location.state.clinicName;
@@ -19,6 +37,24 @@ export default function UserAppoint() {
         user,
       })
       .then((response) => {})
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .post("http://localhost:3001/getQueue", {
+        clinicName,
+      })
+      .then((response) => {
+        setQueueL(response.data);
+        if (response.data !== 0) {
+          setMin(response.data * 5 - 1);
+          setSec(59);
+          minCounter = response.data * 5 - 1;
+          secCounter = 59;
+          setInterval(startTimer, 1000);
+        }
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -51,24 +87,14 @@ export default function UserAppoint() {
               Book Your Appointment
             </button>
 
-            <h3>Estimated queue time left : 40:00</h3>
+            <h3>
+              Estimated queue time left : &nbsp; {min} :: {sec}
+            </h3>
 
             <div className="row Stat">
-              <div className="cur-tok col-6 text-center">
-                <i className="fa fa-edit"></i>
-                <span>Current Token</span>
-              </div>
-              <div className="tot-tok col-6 text-center">
+              <div className="tot-tok col-12 text-center">
                 <i className="fa fa-group"></i>
-                <span>Total Token</span>
-              </div>
-              <div className="row">
-                <div id="cur-tok" className="CurrentToken col-6 text-center">
-                  1
-                </div>
-                <div id="tot-tok" className="TotalToken col-6 text-center">
-                  100
-                </div>
+                <span>Your turn after : &nbsp; {queueL} &nbsp; patients</span>
               </div>
             </div>
           </div>

@@ -42,11 +42,16 @@ export default function Login() {
       })
       .then((response) => {
         // load the doctor home page
-        const message = response.data;
+        const message = response.data.message;
         if (message === "Logged in successfully") {
-          navigate("/dashboard");
+          navigate("/dashboard", {
+            state: {
+              name: response.data.foundClinic.doctorName,
+              clinic: response.data.foundClinic.nameOfClinic,
+            },
+          });
         } else {
-          alert(message);
+          alert(response.data);
         }
       })
       .catch((err) => {
@@ -107,7 +112,7 @@ export default function Login() {
                       value={email}
                       type="text"
                       className="inp my-3 mx-3 px-3"
-                      placeholder="Username"
+                      placeholder="Email"
                     />
                   </div>
                 </div>
@@ -127,7 +132,7 @@ export default function Login() {
                   className="form-row d-flex justify-content-center"
                   style={{ color: "black" }}
                 >
-                  <div className="offset-1 col-md-4 m-2">
+                  <div className="offset-1 col-md-4 m-2" on>
                     <label className="">You are a : </label>
                     <select
                       id="sub"

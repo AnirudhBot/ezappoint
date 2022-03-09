@@ -15,7 +15,15 @@ import UserAppoint from "./components/UserAppoint";
 
 function App() {
   const [mode, setmode] = useState("dark");
-
+  if(mode === 'dark') {
+    document.body.style.backgroundColor = "#253047";
+    document.body.style.color = "white";
+    
+  }  
+   else{
+    document.body.style.backgroundColor = "white";
+    document.body.style.fontColor = "black";
+   }
   const toggleMode = () => {
     if (mode === "dark") {
       setmode("light");
